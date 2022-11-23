@@ -122,8 +122,10 @@ class HBNBCommand(cmd.Cmd):
         elif value.find('.') != -1:
             return float(value)
         else:
+            value = value[1:-1]
             value = value.split('_')
             return value
+        return None
 
     def do_create(self, args):
         """ Create an object of any class"""
@@ -136,14 +138,19 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
         new_instance = HBNBCommand.classes[arg[0]]()
+        arg = arg[1:]
+        for block in arg:
+            block = block.split('=')
+            i
 
-        arg = args.split('=')
+            key = block[0]
+            Value = block[1]
 
-        key = arg[0]
-        Value = arg[1]
-
-        Value = self.check_type(Value)
-
+            Value = self.check_type(Value)
+            if Value is None:
+                continue
+            else:
+                setattr(new_instance, key, Value)
         storage.save()
         print(new_instance.id)
         storage.save()
