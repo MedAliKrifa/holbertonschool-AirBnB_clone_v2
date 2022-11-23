@@ -119,7 +119,7 @@ class HBNBCommand(cmd.Cmd):
         if value.isnumeric():
             return int(value)
 
-        elif value.find('.') != -1 and float(value):
+        elif float(value):
             return float(value)
         else:
             value = value[1:-1]
