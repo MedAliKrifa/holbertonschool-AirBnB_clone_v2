@@ -120,7 +120,8 @@ class HBNBCommand(cmd.Cmd):
         if value[0] == '"' and value[-1] == '"':
             value = value[1:-1]
             value = value.split('_')
-            value = ' '.join(map(str, value))
+            listtostr = ' '.join(map(str, value))
+            return listtostr
 
         elif value.isnumeric():
             return int(value)
