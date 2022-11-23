@@ -116,15 +116,17 @@ class HBNBCommand(cmd.Cmd):
     def check_type(self, value):
         """" check type of value"""
 
-        if value.isnumeric():
-            return int(value)
 
-        elif float(value):
-            return float(value)
-        else:
+        if value[0] == '"' and value[-1] == '"':
             value = value[1:-1]
             value = value.split('_')
             return value
+
+        elif value.isnumeric():
+            return int(value)
+
+        elif value.find('.') != -1:
+            return float(value)
         return None
 
     def do_create(self, args):
