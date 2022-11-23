@@ -141,7 +141,6 @@ class HBNBCommand(cmd.Cmd):
         arg = arg[1:]
         for block in arg:
             block = block.split('=')
-            i
 
             key = block[0]
             Value = block[1]
