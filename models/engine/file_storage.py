@@ -61,10 +61,7 @@ class FileStorage:
         """delete objects"""
         if obj == None:
             return
-        di = False
-        for key, val in FileStorage.__objects.items():
-            if obj.__class__.__name__ + "." + obj.id == key:
-                di = True
-
-            if di:
-                del FileStorage.__objects[obj.__class__.__name__ + "." + obj.id]
+        
+        key = obj.__class__.__name__ + '.' + obj.id
+        if key in FileStorage.__objects:
+            del self.__objects[key]
