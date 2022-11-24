@@ -112,16 +112,36 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
+    def check_value(self, value):
+        """
+        check value if is string or int value
+        """
+        arg = ""
+        if value[0] == '"' and value[-1] == '"':
+
+            for i in range(1, len(value) - 1):
+                if value[i] == "_":
+                    arg += " "
+                    continue
+                arg += value[i]
+            return arg
+        elif value.find(".") != -1:
+            return float(value)
+        else:
+            return int(value)
+
     def do_create(self, args):
         """create Object"""
         arg = args.split()
         if not args:
-            print(" class name missing ")
+            print("** class name missing **")
             return
         elif arg[0] not in HBNBCommand.classes:
-            print(" class doesn't exist ")
+            print("** class doesn't exist **")
             return
+
         new_instance = eval(arg[0])()
+        print(arg[0])
         arg.pop(0)
         for a in arg:
             a = a.split('=')
@@ -129,21 +149,11 @@ class HBNBCommand(cmd.Cmd):
                 continue
             key = a[0]
             value = a[1]
-            str = ""
-            if value[0] == '"' and value[len(value) - 1] == '"':
-                for index in range(1, len(value)-1):
-                    if value[index] == "_":
-                        str += " "
-                        continue
-                    str += value[index]
-                value = str
-                print(value)
-            elif value.find(".") != -1:
-                value = float(value)
+            value = self.check_value(value)
+            if value is None:
+                continue
             else:
-                value = int(value)
-
-            setattr(new_instance, key, value)
+                setattr(new_instance, key, value)
         storage.new(new_instance)
         storage.save()
         print(new_instance.id)
