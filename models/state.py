@@ -27,7 +27,3 @@ class State(BaseModel, Base):
                 if i.state_id == self.id:
                     listofcities.append(i)
             return listofcities
-
-    def __init__(self, *args, **kwargs):
-        """Initialize model."""
-        super().__init__(*args, **kwargs)
