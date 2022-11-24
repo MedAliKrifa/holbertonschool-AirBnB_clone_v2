@@ -15,15 +15,15 @@ class State(BaseModel, Base):
     name = Column(String(128), nullable = False)
 
 
-    cities = relationship("City",  backref="state")
+    #cities = relationship("City",  backref="state")
     
-    if getenv("HBNB_TYPE_STORAGE") != "db":
+    """if getenv("HBNB_TYPE_STORAGE") != "db":
         @property
         def cities(self):
-            """"returns the list of City instances"""
+            
             listofcities = []
             allcititesinstance = models.storage.all(City)
             for i in allcititesinstance.values():
                 if i.state_id == self.id:
                     listofcities.append(i)
-            return listofcities
+            return listofcities"""
