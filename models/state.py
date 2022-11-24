@@ -10,7 +10,7 @@ from models.city import City
 class State(BaseModel, Base):
     """ State class """
     if getenv("HBNB_TYPE_STORAGE") == "db":
-        __tablename__ = "state"
+        __tablename__ = "states"
 
         name = Column(String(128), nullable = False)
 
