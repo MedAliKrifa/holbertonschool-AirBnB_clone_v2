@@ -9,14 +9,15 @@ from models.city import City
 
 class State(BaseModel, Base):
     """ State class """
-    __tablename__ = "State"
+    if getenv("HBNB_TYPE_STORAGE") == "db":
+        __tablename__ = "State"
 
-    name = Column(String(128), nullable = False)
+        name = Column(String(128), nullable = False)
 
 
-    cities = relationship("City",  backref="state")
-    if getenv("HBNB_TYPE_STORAGE") != "db":
-
+        cities = relationship("City",  backref="state")
+    
+    else:
         @property
         def cities(self):
             """"returns the list of City instances"""
