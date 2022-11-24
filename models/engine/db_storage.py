@@ -1,65 +1,69 @@
 #!/usr/bin/python3
-""""
-new engine
-"""
-
-
+"""This module defines a class to manage db_storage for hbnb clone"""
 from sqlalchemy import create_engine
-from models.base_model import Base
+
 from os import getenv
-from sqlalchemy.orm import scoped_session, sessionmaker
 
 
-class DBStorage:
-    """"
-    i still dont know why m building this class tbh...
-    """
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
+from models.user import User
+from models.base_model import BaseModel, Base
+from sqlalchemy.orm import sessionmaker, scoped_session
 
+
+class DBStorage():
+    """This class manages storage of hbnb models in db_storage"""
     __engine = None
     __session = None
 
     def __init__(self):
-        """
-        creating self engine
-        """
-
-        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'
-                                      .format(getenv('HBNB_MYSQL_USER'),
-                                              getenv('HBNB_MYSQL_PWD'),
-                                              getenv('HBNB_MYSQL_HOST'),
-                                              getenv('HBNB_MYSQL_DB')),
+        """ initialize of anew bd create the engine """
+        self.__engine = create_engine("mysql+mysqldb://{}:{}@{}/{}".
+                                      format(getenv('HBNB_MYSQL_USER'),
+                                             getenv('HBNB_MYSQL_PWD'),
+                                             getenv('HBNB_MYSQL_HOST'),
+                                             getenv('HBNB_MYSQL_DB')),
                                       pool_pre_ping=True)
         if getenv('HBNB_ENV') == 'test':
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        dict = {}
+        """Query on the curret database session all objects of the given class.
+        If cls is None, queries all types of objects.
+        Return:
+        Dict of queried classes in the format <class name>.<obj id> = obj."""
         if cls is None:
-            for c in self.all_classes:
-                c = eval(c)
-                for instance in self.__session.query(c).all():
-                    key = instance.__class__.__name__ + '.' + instance.id
-                    dict[key] = instance
+            objs = self.__session.query(State, City, User,
+                                        Review, Place, Amenity).all()
         else:
-            for instance in self.__session.query(cls).all():
-                key = instance.__class__.__name__ + '.' + instance.id
-                dict[key] = instance
-        return dict
+            objs = self.__session.query(cls.__class__.__name__)
+        resu = {}
+        for obj in objs:
+            resu[obj.__class__.__name__ + "." + obj.id] = obj
+        return resu
 
     def new(self, obj):
+        """Add obj to the current database session."""
         self.__session.add(obj)
 
     def save(self):
-
+        """Commit all changes to the current database session."""
         self.__session.commit()
 
     def delete(self, obj=None):
-
+        """delete from the current database session obj """
         if obj:
             self.__session.delete(obj)
 
     def reload(self):
         Base.metadata.create_all(self.__engine)
-        dbsession = sessionmaker(bind=self.__engine, expire_on_commit=False)
-        Session = scoped_session(dbsession)
+
+        session_factory = sessionmaker(bind=self.__engine,
+                                       expire_on_commit=False)
+        Session = scoped_session(session_factory)
+
         self.__session = Session()
