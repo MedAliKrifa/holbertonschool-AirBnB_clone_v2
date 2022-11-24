@@ -9,6 +9,7 @@ from models.base_model import Base
 from os import getenv
 from sqlalchemy.orm import scoped_session, sessionmaker
 
+
 class DBStorage:
     """"
     i still dont know why m building this class tbh...
@@ -54,11 +55,11 @@ class DBStorage:
 
     def delete(self, obj=None):
 
-         if obj:
+        if obj:
             self.__session.delete(obj)
 
     def reload(self):
         Base.metadata.create_all(self.__engine)
-        dbsession = sessionmaker(bind = self.__engine, expire_on_commit = False)
+        dbsession = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(dbsession)
         self.__session = Session()
