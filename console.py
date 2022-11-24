@@ -116,6 +116,7 @@ class HBNBCommand(cmd.Cmd):
     def check_type(self, value):
         """" check type of value"""
 
+
         if value[0] == '"' and value[-1] == '"':
             value = value[1:-1]
             value = value.split('_')
@@ -134,37 +135,30 @@ class HBNBCommand(cmd.Cmd):
 
         arg = args.split()
         if not args:
-            print(" class name missing ")
+            print("** class name missing **")
             return
         elif arg[0] not in HBNBCommand.classes:
-            print(" class doesn't exist ")
+            print("** class doesn't exist **")
             return
-        new_instance = eval(arg[0])()
-        arg.pop(0)
-        for a in arg:
-            a = a.split('=')
-            if len(a) != 2:
+        new_instance = HBNBCommand.classes[arg[0]]()
+        arg = arg[1:]
+        for block in arg:
+            block = block.split('=')
+            if (len(block) != 2):
                 continue
-            key = a[0]
-            value = a[1]
-            str = ""
-            if value[0] == '"' and value[len(value) - 1] == '"':
-                for index in range(1, len(value)-1):
-                    if value[index] == "_":
-                        str += " "
-                        continue
-                    str += value[index]
-                value = str
-                print(value)
-            elif value.find(".") != -1:
-                value = float(value)
-            else:
-                value = int(value)
 
-            setattr(new_instance, key, value)
+            key = block[0]
+            Value = block[1]
+
+            Value = self.check_type(Value)
+            if Value is None:
+                continue
+            else:
+                setattr(new_instance, key, Value)
         storage.new(new_instance)
         storage.save()
         print(new_instance.id)
+        
 
     def help_create(self):
         """ Help information for the create method """
